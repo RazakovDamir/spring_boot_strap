@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div th:if="${param.error}">
+    Invalid username and password.
+</div>
+<div th:if="${param.logout}">
+    You have been logged out.
+</div>
+<div class="container">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-3 mt-5">
+            <form th:action="@{/login}" class="form-signin" method="post">
+                <h1 class="h2 mb-3 font-weight-normal">Please sign in</h1>
+                <div class="form-group">
+                    <input type="text" id="inputUsername" class="form-control" placeholder="Username" required=""
+                           autofocus="" name="j_username">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required=""
+                           name="j_password">
+                </div>
+                <div class="form-group d-grid mt-1">
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

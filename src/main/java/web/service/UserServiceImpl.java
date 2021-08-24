@@ -3,44 +3,54 @@ package web.service;
 import web.dao.UserDao;
 import web.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService{
-
-    private final UserDao userDao;
-    private final PasswordEncoder passwordEncoder;
+@Transactional
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
-        this.userDao = userDao;
-        this.passwordEncoder = passwordEncoder;
+    private UserDao userDao;
+
+    @Override
+    public List<User> getAllUsers() {
+        return userDao.getAllUsers();
     }
 
     @Override
-    public void save(User user) {
-        userDao.save(user);
+    public void add(User user) {
+        userDao.add(user);
     }
 
     @Override
-    public void delete(Long id) {
-        userDao.deleteById(id);
+    public void delete(User user) {
+        userDao.delete(user);
     }
 
     @Override
-    public List<User> findAll() {
-        return userDao.findAll();
+    public void update(User user) {
+        userDao.update(user);
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userDao.findByUsername(username);
+    public User getById(long id) {
+        return userDao.getById(id);
     }
+
     @Override
-    public User getUserById(Long id) {
-        return userDao.getUserById(id);
+    public User getByName(String name) {
+        return userDao.getByName(name);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        User user = userDao.getByName(s);
+        return user;
     }
 }

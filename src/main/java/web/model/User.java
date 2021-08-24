@@ -1,8 +1,5 @@
 package web.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,52 +7,72 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private long id;
+    @Column(unique = true)
     private String name;
-
     private String lastname;
-
     private int age;
-
-    private String username;
-
+    private String email;//unique
     private String password;
-
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "users_roles",joinColumns = @JoinColumn(name = "users_id"),inverseJoinColumns = @JoinColumn(name = "roles_id"))
     private Set<Role> roles;
 
-    public User(String name, String lastname, int age, String username, String password, Set<Role> roles) {
+//    public String getRolesString() {
+//        StringBuilder sb = new StringBuilder();
+//
+//        for(Role role : roles) {
+//            sb.append(role.getRole().substring(5).concat(" "));
+//        }
+//        return sb.toString().trim();
+//    }
+
+    public User() {
+    }
+
+    public User(String name, String lastname,int age,String email, String password, Set<Role> roles) {
         this.name = name;
         this.lastname = lastname;
-        this.age = age;
-        this.username = username;
+        this.age=age;
+        this.email = email;
         this.password = password;
         this.roles = roles;
     }
 
+    public User(long id, String name, String lastname,int age, String email, String password, Set<Role> roles) {
+        this.id = id;
+        this.name = name;
+        this.lastname = lastname;
+        this.age=age;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public void setName(String name) {
@@ -70,24 +87,12 @@ public class User implements UserDetails {
         this.lastname = lastname;
     }
 
-    public int getAge() {
-        return age;
+    public String getEmail() {
+        return email;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setPassword(String password) {
@@ -108,6 +113,16 @@ public class User implements UserDetails {
     }
 
     @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
     public boolean isAccountNonExpired() {
         return true;
     }
@@ -125,17 +140,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public UserDetails getUserDetails() {
-        return new org.springframework.security.core.userdetails.User(
-                username,
-                password,
-                isEnabled(),
-                isAccountNonExpired(),
-                isCredentialsNonExpired(),
-                isAccountNonLocked(),
-                roles
-        );
     }
 }

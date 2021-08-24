@@ -18,20 +18,11 @@ public class User implements UserDetails {
     private String name;
     private String lastname;
     private int age;
-    private String email;//unique
+    private String email;
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",joinColumns = @JoinColumn(name = "users_id"),inverseJoinColumns = @JoinColumn(name = "roles_id"))
     private Set<Role> roles;
-
-//    public String getRolesString() {
-//        StringBuilder sb = new StringBuilder();
-//
-//        for(Role role : roles) {
-//            sb.append(role.getRole().substring(5).concat(" "));
-//        }
-//        return sb.toString().trim();
-//    }
 
     public User() {
     }
